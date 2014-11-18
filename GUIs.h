@@ -11,4 +11,10 @@
 
 #include <stdio.h>
 
+class GUIs {
+public:
+    bool showInventory;
+    void drawGUI();
+};
+
 #endif /* defined(__FinalProject__GUIs__) */

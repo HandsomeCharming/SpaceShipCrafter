@@ -11,6 +11,8 @@
 #include <vector>
 
 #include "Basic.h"
+#include "GUIs.h"
+#include "GameObject.h"
 
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
@@ -20,11 +22,13 @@
 
 using namespace std;
 
+
 float width,height;
 float facingAngle = 90/57.3 ;
 float VerAngle = 0;
-float playerPos[3] = {0,0,5};
+float playerPos[3] = {375,0,375};
 int closestName = 0;
+//int mapSize = 250;
 
 static int hits; // Number of entries in hit buffer.
 static unsigned int buffer[1024]; // Hit buffer.
@@ -32,9 +36,13 @@ static int blockNameInit = 1000;
 
 static float oneD = 1.0/57.3;
 static int blockSize = 3;
-static unsigned int texture[7]; // Array of texture indices.
+
+GameObject* selectedObject = NULL;
+GUIs* guis;
 
 int grid[1000][1000];
+
+vector<GroundObject*> groundVec;
 
 
 void loadExternalTextures()
@@ -90,7 +98,10 @@ void drawGround() {
     
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glColor3f(0, 1, 0);
-    int k = 0;
+    for(int a=0;a!=groundVec.size();++a) {
+        groundVec[a]->drawObject();
+    }
+    /*int k = 0;
     glLoadName(1);
     blockNameInit = 1000;
     for(int a=0;a!=300;++a) {
@@ -103,17 +114,16 @@ void drawGround() {
             k = (k+1)%2;
         }
         glEnd();
-    }
+    }*/
     glLoadName(0);
 }
 
 void drawSphere() {
-    
     glLoadName(2);
     glBindTexture(GL_TEXTURE_2D, 0);
     glColor3f(1, 0, 0);
     glPushMatrix();
-    glTranslatef(0, 2, -10);
+    glTranslatef(375, 2, 365);
     glutSolidSphere(3, 10, 10);
     glEnd();
     glLoadName(0);
@@ -124,11 +134,13 @@ void drawScene(void)
     glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
     
+    guis->drawGUI();
+    
     setPointOfView();
     setProjection();
     
     drawGround();
-    drawSphere();
+    //drawSphere();
     
     glutSwapBuffers();
 }
@@ -154,6 +166,17 @@ void setup() {
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     
+    for(int a=0; a!=MAP_SIZE; ++a) {
+        for(int b=0; b!=MAP_SIZE; ++b) {
+            GroundObject* ground = new GroundObject();
+            ground->coor.x = a;
+            ground->coor.y = b;
+            ground->touchNum = a*MAP_SIZE+b+BLOCK_TOUCH_NUM;
+            groundVec.push_back(ground);
+        }
+    }
+    
+    guis = new GUIs();
     ///glEnable(GL_LIGHTING);
     //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
@@ -185,6 +208,12 @@ void findClosestHit(int hits, unsigned int buffer[])//[ballAndTorusPicking.cpp]
         else ptr += 3;
     }
     cout<<closestName<<endl;
+    if(closestName >= 1000) {
+        if(selectedObject)
+            selectedObject->isGrid = false;
+        selectedObject = groundVec[closestName-1000];
+        groundVec[closestName-1000]->isGrid = true;
+    }
 }
 
 
@@ -229,6 +258,18 @@ void pickFunction(int button, int state, int x, int y)  //[ballAndTorusPicking.c
     glutPostRedisplay();//[ballAndTorusPicking.cpp]
 }
 // [ballANdTorusPicking.cpp] by Sumanta Guha
+
+void keyInput(unsigned char key, int x, int y)
+{
+    switch(key)
+    {
+        case 'e':
+            guis->showInventory = !guis->showInventory;
+            break;
+    }
+    glutPostRedisplay();
+}
+
 
 void specialKeyInput(int key, int x, int y)
 {
@@ -275,6 +316,7 @@ int main(int argc, char **argv)
     glutTimerFunc(5, animate, 1);
     glutSpecialFunc(specialKeyInput);
     glutMouseFunc(pickFunction);
+    glutKeyboardFunc(keyInput);
     glutMainLoop();
     
     return 0;

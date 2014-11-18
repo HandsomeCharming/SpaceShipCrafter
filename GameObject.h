@@ -16,15 +16,17 @@
 
 class GameObject {
 public:
-    GameObject():isSelected(false){};
+    GameObject():isSelected(false), isGrid(0){};
     bool isSelected;
+    bool isGrid;
+    int touchNum;
     virtual void drawObject() = 0;
 };
 
 class GroundObject : public GameObject{
 public:
     GroundObject();
-    bool isGrid;
+    
     Coordinate coor;
     void drawObject();
 };
