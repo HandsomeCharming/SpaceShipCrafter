@@ -10,6 +10,11 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef __APPLE__
+#  include <GLUT/glut.h>
+#else
+#  include <GL/glut.h>
+#endif
 
 using namespace std;
 
@@ -51,4 +56,10 @@ BitMapFile *getBMPData(string filename)
     }
     
     return bmp;
+}
+
+void writeBitmapString(void *font, char *string)    //[A1]
+{  char *c;                                         //[A1]
+    for (c = string; *c != '\0'; c++)               //[A1]
+        glutBitmapCharacter(font, *c);              //[A1]
 }

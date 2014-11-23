@@ -16,10 +16,15 @@
 #define BLOCK_SIZE 3
 
 #define BLOCK_TOUCH_NUM 1000
+#define INVEN_TOUCH_NUM 900
+#define BAR_TOUCH_NUM 950
 
 static unsigned int texture[7]; // Array of texture indices.
 
+
 using namespace std;
+
+
 
 struct BitMapFile
 {
@@ -34,5 +39,7 @@ struct Coordinate {
 };
 
 BitMapFile *getBMPData(string filename);
+
+void writeBitmapString(void *font, char *string);
 
 #endif /* defined(__FinalProject__Basic__) */

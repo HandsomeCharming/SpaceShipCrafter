@@ -11,10 +11,46 @@
 
 #include <stdio.h>
 
+#define INVEN_ROW 5
+#define INVEN_COL 9
+#define INVEN_BLK_SIZE 1
+#define BAR_COL 9
+
+class Inventory {
+public:
+    Inventory() : inventoryPos{0,0}, inventorySize{2.5,2} {}
+    float inventoryPos[2];
+    float inventorySize[2];
+    int selected;
+    void drawInventory();
+};
+
+class Bar {
+public:
+    Bar() {}
+    const float barPos[2] = {-1.2,-2.8};
+    const float barSize[2] = {2.5,0.5};
+    int selected;  //-1 for not selected
+    void drawBar();
+};
+
 class GUIs {
 public:
+    GUIs() : showInventory(false), showBar(true) {
+        inventory = new Inventory();
+        bar = new Bar();
+    }
+    
+    Inventory* inventory;
+    Bar* bar;
+    
+    
+    bool showBar;
     bool showInventory;
     void drawGUI();
+    void notSelected();
 };
+
+
 
 #endif /* defined(__FinalProject__GUIs__) */

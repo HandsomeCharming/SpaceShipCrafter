@@ -8,10 +8,10 @@
 
 #include "DataProcessor.h"
 
-void DataProcessor::pickItem(Item item) {
+void DataProcessor::pickItem(Item* item) {
     items.push_back(item);
 }
 
-vector<Item> DataProcessor::getItems() {
+vector<Item*> DataProcessor::getItems() {
     return items;
 }
