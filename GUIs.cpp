@@ -11,6 +11,8 @@
 #include <cmath>
 #include <vector>
 
+#include "DataProcessor.h"
+
 #include "Basic.h"
 
 #ifdef __APPLE__
@@ -23,13 +25,47 @@ using namespace std;
 
 void GUIs::drawGUI() {
     glDisable(GL_TEXTURE_2D);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     if(showBar) {
         bar->drawBar();
+        bar->drawItems();
+        
     }
     if(showInventory) {
         inventory->drawInventory();
+        inventory->drawItems();
     }
     glEnable(GL_TEXTURE_2D);
+}
+
+void Bar::drawItems() {
+    vector<Item*>* items = dataProcessor->getBarItems();
+    
+    float xx = 0.25;
+    float x = barPos[0] + 0.125, y = barPos[1] + 0.15;
+
+    glPushMatrix();
+    for(int a=0; a!=items->size();++a) {
+        Item* item = (*dataProcessor->getBarItems())[a];
+        
+        glPolygonMode(GL_FILL, GL_FRONT_AND_BACK);
+        glColor3f(0, 0, 0);
+        int pos = item->pos;
+        int touchNum = pos + BAR_TOUCH_NUM;
+        
+        glLoadName(touchNum);
+        glBegin(GL_POLYGON);
+        x = barPos[0] + 0.125 + pos * xx, y = barPos[1] + 0.15;
+        glVertex3f(x, y, -4.94);
+        glVertex3f(x+xx, y, -4.94);
+        glVertex3f(x+xx, y+xx, -4.94);
+        glVertex3f(x, y+xx, -4.94);
+        glEnd();
+        
+    }
+    glPopMatrix();
+    glLoadName(0);
+
 }
 
 void Bar::drawBar() {
@@ -83,9 +119,42 @@ void GUIs::notSelected() {
     inventory->selected = -1;
 }
 
+void Inventory::drawItems() {
+    vector<Item*>* items = dataProcessor->getInvenItems();
+    
+    float xx = inventorySize[0]/(INVEN_COL+2.0);
+    
+    float x = 0, y = 1.3;
+    glPushMatrix();
+    glTranslatef(inventoryPos[0], inventoryPos[1], 0);
+    for(int a=0; a!=items->size();++a) {
+        Item* item = (*dataProcessor->getInvenItems())[a];
+
+        glPolygonMode(GL_FILL, GL_FRONT_AND_BACK);
+        glColor3f(0, 0, 0);
+        int pos = item->pos;
+        int touchNum = pos + INVEN_TOUCH_NUM;
+        
+        glLoadName(touchNum);
+        x = (pos%9+1)*xx, y = 1.3 - xx*(pos/9+1);
+        glBegin(GL_POLYGON);
+        glColor3f(0,0,0);
+        glVertex3f(x, y, -4.94);
+        glVertex3f(x+xx, y, -4.94);
+        glVertex3f(x+xx, y+xx, -4.94);
+        glVertex3f(x, y+xx, -4.94);
+        glEnd();
+        
+    }
+    glPopMatrix();
+    glLoadName(0);
+}
+
 void Inventory::drawInventory() {
     glPushMatrix();
     glTranslatef(0, 0, 0);
+    
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     glPushMatrix();
     glColor3f(1, 0, 0);

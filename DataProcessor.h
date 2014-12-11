@@ -11,13 +11,18 @@
 
 #include <stdio.h>
 #include <vector>
+#include "Basic.h"
+
 
 using namespace std;
 
 
+
 class Item {
 public:
-    int type;
+    
+    
+    ItemType type;
     int count;  //Stack
     int pos;    //pos in inventory or bar.
     int state;  //0 for inventory, 1 for bar, 2 for selected by mouse.
@@ -25,11 +30,17 @@ public:
 
 class DataProcessor {
 public:
-    DataProcessor() {
+    DataProcessor() : mouseItem(NULL) {
+        invenItems = new vector<Item*>();
+        barItems = new vector<Item*>();
     }
-    vector<Item*> items;
+    vector<Item*>* invenItems;
+    vector<Item*>* barItems;
+    Item* mouseItem;
     void pickItem(Item* item);
-    vector<Item*> getItems();
+    vector<Item*>* getBarItems();
+    vector<Item*>* getInvenItems();
 };
+
 
 #endif /* defined(__FinalProject__DataProcessor__) */

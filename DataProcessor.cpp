@@ -9,9 +9,13 @@
 #include "DataProcessor.h"
 
 void DataProcessor::pickItem(Item* item) {
-    items.push_back(item);
+    invenItems->push_back(item);
 }
 
-vector<Item*> DataProcessor::getItems() {
-    return items;
+vector<Item*>* DataProcessor::getInvenItems() {
+    return invenItems;
+}
+
+vector<Item*>* DataProcessor::getBarItems() {
+    return barItems;
 }

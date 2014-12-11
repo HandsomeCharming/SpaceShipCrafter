@@ -38,6 +38,8 @@ void resize(int w, int h)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    gameScene->width = w;
+    gameScene->height = h;
     gameScene->setProjection();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

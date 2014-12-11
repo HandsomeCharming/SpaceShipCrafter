@@ -16,6 +16,8 @@
 #define INVEN_BLK_SIZE 1
 #define BAR_COL 9
 
+class DataProcessor;
+
 class Inventory {
 public:
     Inventory() : inventoryPos{0,0}, inventorySize{2.5,2} {}
@@ -23,6 +25,8 @@ public:
     float inventorySize[2];
     int selected;
     void drawInventory();
+    void drawItems();
+    DataProcessor* dataProcessor;
 };
 
 class Bar {
@@ -32,6 +36,8 @@ public:
     const float barSize[2] = {2.5,0.5};
     int selected;  //-1 for not selected
     void drawBar();
+    void drawItems();
+    DataProcessor* dataProcessor;
 };
 
 class GUIs {
@@ -43,7 +49,6 @@ public:
     
     Inventory* inventory;
     Bar* bar;
-    
     
     bool showBar;
     bool showInventory;
